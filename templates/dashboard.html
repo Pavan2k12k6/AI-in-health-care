@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard - MedSafety AI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+    <div>
+        <a href="{{ url_for('chatbot') }}" class="btn btn-success me-2">
+            <i class="fas fa-robot me-2"></i>AI Assistant
+        </a>
+        <a href="{{ url_for('import_patients') }}" class="btn btn-info me-2">
+            <i class="fas fa-file-import me-2"></i>Import Patients
+        </a>
+        <a href="{{ url_for('add_patient') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>Add New Patient
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card bg-primary text-white">
+            <span class="stats-number">{{ patients|length }}</span>
+            <span class="stats-label">Total Patients</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-success text-white">
+            <span class="stats-number">
+                {% set pending_count = 0 %}
+                {% for patient in patients %}
+                    {% set pending_count = pending_count + patient.pending_count %}
+                {% endfor %}
+                {{ pending_count }}
+            </span>
+            <span class="stats-label">Pending Prescriptions</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-warning text-dark">
+            <span class="stats-number">
+                {% set active_patients = 0 %}
+                {% for patient in patients %}
+                    {% if patient.pending_count > 0 %}
+                        {% set active_patients = active_patients + 1 %}
+                    {% endif %}
+                {% endfor %}
+                {{ active_patients }}
+            </span>
+            <span class="stats-label">Patients with Pending Rx</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-info text-white">
+            <span class="stats-number">{{ current_user.username }}</span>
+            <span class="stats-label">Current Provider</span>
+        </div>
+    </div>
+</div>
+
+<!-- Patient Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" id="patientSearch" placeholder="Search patients by name or ID...">
+        </div>
+    </div>
+</div>
+
+<!-- Patients List -->
+<div class="row">
+    {% if patients %}
+        {% for patient in patients %}
+        <div class="col-md-6 col-lg-4 patient-card">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ patient.first_name }} {{ patient.last_name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted patient-id">ID: {{ patient.patient_id }}</h6>
+                    <p class="card-text mb-2">
+                        <i class="fas fa-calendar-alt me-2"></i>DOB: {{ patient.date_of_birth.strftime('%m/%d/%Y') }}
+                    </p>
+                    {% if patient.pending_count > 0 %}
+                    <div class="alert alert-warning py-1 px-2 mb-2 d-inline-block">
+                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ patient.pending_count }} pending prescriptions</small>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent d-flex justify-content-between flex-wrap gap-1">
+                    <a href="{{ url_for('patient_profile', patient_id=patient.id) }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-user-md me-1"></i>View Profile
+                    </a>
+                    <a href="{{ url_for('patient_chatbot', patient_id=patient.id) }}" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-robot me-1"></i>AI Assistant
+                    </a>
+                    <a href="{{ url_for('add_prescription', patient_id=patient.id) }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-prescription me-1"></i>Prescribe
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>You don't have any patients yet. 
+                <a href="{{ url_for('add_patient') }}" class="alert-link">Add your first patient</a>.
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

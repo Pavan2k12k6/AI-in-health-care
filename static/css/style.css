@@ -1,0 +1,286 @@
+/* Custom styles for DrugInteraction Healthcare Application */
+
+/* General Styling */
+body {
+    background-color: var(--bs-dark-bg-subtle);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* Navigation Bar */
+.navbar-brand {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    margin-right: 10px;
+    color: var(--bs-info);
+}
+
+/* Cards */
+.card {
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+/* Patient Profile */
+.patient-info-card {
+    background-color: var(--bs-dark-bg-subtle);
+    border-left: 4px solid var(--bs-info);
+}
+
+.patient-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.patient-card {
+    transition: transform 0.3s;
+}
+
+.patient-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Dashboard */
+.stats-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.stats-label {
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+}
+
+/* Forms */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Medication & Prescription */
+.medication-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.medication-list-item:last-child {
+    border-bottom: none;
+}
+
+.medication-inactive {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Severity indicators */
+.severity-badge {
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 50rem;
+}
+
+.severity-mild {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.severity-moderate {
+    background-color: var(--bs-warning);
+    color: var(--bs-dark);
+}
+
+.severity-severe {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.severity-unknown {
+    background-color: var(--bs-secondary);
+    color: white;
+}
+
+/* Charts */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 2rem;
+}
+
+/* Drug suggestions dropdown */
+.suggestions-container {
+    position: relative;
+}
+
+#drug-suggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: none;
+}
+
+.suggestion-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+/* Interaction Results */
+.interaction-card {
+    border-left: 5px solid var(--bs-primary);
+    margin-bottom: 1rem;
+}
+
+.interaction-card.severe {
+    border-left-color: var(--bs-danger);
+}
+
+.interaction-card.moderate {
+    border-left-color: var(--bs-warning);
+}
+
+.interaction-card.mild {
+    border-left-color: var(--bs-success);
+}
+
+.recommendation-box {
+    background-color: var(--bs-secondary-bg-subtle);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-number {
+        font-size: 2rem;
+    }
+    
+    .patient-section-title {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .patient-section-title .btn {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Genotype Data */
+.genotype-profile {
+    border-left: 5px solid var(--bs-info);
+}
+
+.metabolism-badge {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.metabolism-ultrarapid {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.metabolism-rapid {
+    background-color: var(--bs-warning);
+    color: var(--bs-dark);
+}
+
+.metabolism-normal {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.metabolism-intermediate {
+    background-color: var(--bs-info);
+    color: white;
+}
+
+.metabolism-poor {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.metabolism-unknown {
+    background-color: var(--bs-secondary);
+    color: white;
+}
+
+.gene-table {
+    margin-top: 1.5rem;
+}
+
+.gene-table th {
+    background-color: var(--bs-dark-bg-subtle);
+}
+
+.citations-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* CSV Import */
+.csv-example {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.alert {
+    animation: fadeIn 0.3s;
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="400px" viewBox="0 0 800 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" fill="none">
+        <path d="M50,20 C70,40 80,30 100,40 S120,60 140,60 S160,40 180,40 S200,60 220,60" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M250,80 C270,100 280,90 300,100 S320,120 340,120 S360,100 380,100 S400,120 420,120" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M450,140 C470,160 480,150 500,160 S520,180 540,180 S560,160 580,160 S600,180 620,180" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M650,200 C670,220 680,210 700,220 S720,240 740,240 S760,220 780,220 S800,240 820,240" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M50,260 C70,280 80,270 100,280 S120,300 140,300 S160,280 180,280 S200,300 220,300" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M250,320 C270,340 280,330 300,340 S320,360 340,360 S360,340 380,340 S400,360 420,360" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        
+        <circle cx="50" cy="50" r="5" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="150" cy="150" r="7" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="250" cy="250" r="4" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="350" cy="350" r="6" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="450" cy="80" r="8" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="550" cy="180" r="5" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="650" cy="280" r="7" fill="#FFFFFF" opacity="0.3"></circle>
+        <circle cx="750" cy="120" r="4" fill="#FFFFFF" opacity="0.3"></circle>
+        
+        <path d="M20,100 L40,80 L60,100 L40,120 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M120,200 L140,180 L160,200 L140,220 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M220,300 L240,280 L260,300 L240,320 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M320,130 L340,110 L360,130 L340,150 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M420,230 L440,210 L460,230 L440,250 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M520,330 L540,310 L560,330 L540,350 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M620,160 L640,140 L660,160 L640,180 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M720,260 L740,240 L760,260 L740,280 Z" fill="#FFFFFF" opacity="0.2"></path>
+        
+        <path d="M50,200 C60,190 70,190 80,200 C90,210 100,210 110,200" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M150,300 C160,290 170,290 180,300 C190,310 200,310 210,300" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M250,100 C260,90 270,90 280,100 C290,110 300,110 310,100" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M350,200 C360,190 370,190 380,200 C390,210 400,210 410,200" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M450,300 C460,290 470,290 480,300 C490,310 500,310 510,300" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M550,100 C560,90 570,90 580,100 C590,110 600,110 610,100" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M650,200 C660,190 670,190 680,200 C690,210 700,210 710,200" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        <path d="M750,300 C760,290 770,290 780,300 C790,310 800,310 810,300" stroke="#FFFFFF" stroke-width="2" opacity="0.2"></path>
+        
+        <!-- DNA Helix Pattern for healthcare theme -->
+        <path d="M30,30 Q45,15 60,30 Q75,45 90,30 Q105,15 120,30" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        <path d="M30,50 Q45,65 60,50 Q75,35 90,50 Q105,65 120,50" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        
+        <path d="M230,230 Q245,215 260,230 Q275,245 290,230 Q305,215 320,230" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        <path d="M230,250 Q245,265 260,250 Q275,235 290,250 Q305,265 320,250" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        
+        <path d="M530,330 Q545,315 560,330 Q575,345 590,330 Q605,315 620,330" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        <path d="M530,350 Q545,365 560,350 Q575,335 590,350 Q605,365 620,350" stroke="#FFFFFF" stroke-width="2" opacity="0.3"></path>
+        
+        <!-- Medical symbols -->
+        <path d="M400,100 L400,120 L380,120 L380,140 L400,140 L400,160 L420,160 L420,140 L440,140 L440,120 L420,120 L420,100 Z" fill="#FFFFFF" opacity="0.2"></path>
+        <path d="M700,300 L700,320 L680,320 L680,340 L700,340 L700,360 L720,360 L720,340 L740,340 L740,320 L720,320 L720,300 Z" fill="#FFFFFF" opacity="0.2"></path>
+    </g>
+</svg>

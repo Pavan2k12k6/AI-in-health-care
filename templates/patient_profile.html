@@ -1,0 +1,415 @@
+{% extends "layout.html" %}
+
+{% block title %}Patient: {{ patient.first_name }} {{ patient.last_name }} - MedSafety AI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-secondary mb-2">
+            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+        </a>
+        <h2>Patient Profile</h2>
+    </div>
+    <div>
+        <a href="{{ url_for('view_genotype_data', patient_id=patient.id) }}" class="btn btn-info me-2">
+            <i class="fas fa-dna me-2"></i>Genotype Data
+        </a>
+        <a href="{{ url_for('add_prescription', patient_id=patient.id) }}" class="btn btn-primary">
+            <i class="fas fa-prescription me-2"></i>New Prescription
+        </a>
+    </div>
+</div>
+
+<!-- Patient Information Card -->
+<div class="card mb-4 patient-info-card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+                <p class="text-muted mb-2">Patient ID: {{ patient.patient_id }}</p>
+                <p class="mb-1"><i class="fas fa-birthday-cake me-2"></i>Date of Birth: {{ format_date(patient.date_of_birth) }}</p>
+                <p class="mb-1"><i class="fas fa-venus-mars me-2"></i>Gender: {{ patient.gender }}</p>
+                {% if patient.weight %}
+                <p class="mb-1"><i class="fas fa-weight me-2"></i>Weight: {{ patient.weight }} kg</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="mt-3 mt-md-0">
+                    <span class="badge bg-primary mb-2">Healthcare Provider: {{ current_user.first_name }} {{ current_user.last_name }}</span><br>
+                    <small class="text-muted">Created on: {{ format_date(patient.created_at) }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Current Medications -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="patient-section-title">
+                    <h5 class="mb-0"><i class="fas fa-pills me-2"></i>Current Medications</h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMedicationModal">
+                        <i class="fas fa-plus me-1"></i>Add
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if medications %}
+                    <ul class="list-group list-group-flush">
+                        {% for med in medications %}
+                        <li class="list-group-item medication-list-item {% if not med.active %}medication-inactive{% endif %}">
+                            <div>
+                                <span class="fw-bold">{{ med.name }}</span>
+                                <small class="d-block">{{ med.dosage }} - {{ med.frequency }}</small>
+                                <small class="text-muted">Started: {{ format_date(med.start_date) }}</small>
+                                {% if med.end_date %}
+                                <small class="text-muted d-block">Ended: {{ format_date(med.end_date) }}</small>
+                                {% endif %}
+                            </div>
+                            <form method="POST" action="{{ url_for('toggle_medication', medication_id=med.id) }}" class="toggle-medication-form" data-medication-name="{{ med.name }}" data-current-status="{% if med.active %}active{% else %}inactive{% endif %}">
+                                <button type="submit" class="btn btn-sm btn-outline-{% if med.active %}danger{% else %}success{% endif %}">
+                                    {% if med.active %}
+                                    <i class="fas fa-times-circle me-1"></i>Stop
+                                    {% else %}
+                                    <i class="fas fa-check-circle me-1"></i>Restart
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <p class="text-muted mb-0">No medications recorded</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Medical Conditions -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="patient-section-title">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medical Conditions</h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addConditionModal">
+                        <i class="fas fa-plus me-1"></i>Add
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if medical_conditions %}
+                    <ul class="list-group list-group-flush">
+                        {% for condition in medical_conditions %}
+                        <li class="list-group-item">
+                            <span class="fw-bold">{{ condition.name }}</span>
+                            {% if condition.diagnosis_date %}
+                            <small class="d-block text-muted">Diagnosed: {{ format_date(condition.diagnosis_date) }}</small>
+                            {% endif %}
+                            {% if condition.notes %}
+                            <small class="d-block">Notes: {{ condition.notes }}</small>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <p class="text-muted mb-0">No medical conditions recorded</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Allergies -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="patient-section-title">
+                    <h5 class="mb-0"><i class="fas fa-allergies me-2"></i>Allergies</h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addAllergyModal">
+                        <i class="fas fa-plus me-1"></i>Add
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if allergies %}
+                    <ul class="list-group list-group-flush">
+                        {% for allergy in allergies %}
+                        <li class="list-group-item">
+                            <span class="fw-bold">{{ allergy.allergen }}</span>
+                            {% if allergy.severity %}
+                            <span class="badge severity-badge severity-{{ allergy.severity.lower() }}">{{ allergy.severity }}</span>
+                            {% endif %}
+                            {% if allergy.reaction %}
+                            <small class="d-block">Reaction: {{ allergy.reaction }}</small>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <p class="text-muted mb-0">No allergies recorded</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Prescription History -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="patient-section-title">
+                    <h5 class="mb-0"><i class="fas fa-file-prescription me-2"></i>Prescription History</h5>
+                    <div>
+                        <select id="prescriptionFilter" class="form-select form-select-sm">
+                            <option value="all">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if prescriptions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="prescriptionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prescription in prescriptions %}
+                                <tr>
+                                    <td>
+                                        {{ prescription.medication_name }}
+                                        <small class="d-block text-muted">{{ prescription.dosage }} - {{ prescription.frequency }}</small>
+                                    </td>
+                                    <td>{{ format_date(prescription.created_at) }}</td>
+                                    <td class="prescription-status">
+                                        {% if prescription.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif prescription.status == 'approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('interaction_results', prescription_id=prescription.id) }}" class="btn btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if prescription.status == 'pending' %}
+                                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#approveModal" data-prescription-id="{{ prescription.id }}">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal" data-prescription-id="{{ prescription.id }}">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <p class="text-muted mb-0">No prescriptions recorded</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Medication Modal -->
+<div class="modal fade" id="addMedicationModal" tabindex="-1" aria-labelledby="addMedicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMedicationModalLabel">Add Medication</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_medication', patient_id=patient.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3 suggestions-container">
+                        <label for="medication_name" class="form-label">Medication Name</label>
+                        <input type="text" class="form-control" id="medication_name" name="medication_name" required>
+                        <div id="drug-suggestions" class="mt-1"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dosage" class="form-label">Dosage</label>
+                        <input type="text" class="form-control" id="dosage" name="dosage" placeholder="e.g., 10mg" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="frequency" class="form-label">Frequency</label>
+                        <input type="text" class="form-control" id="frequency" name="frequency" placeholder="e.g., twice daily" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Medication</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Medical Condition Modal -->
+<div class="modal fade" id="addConditionModal" tabindex="-1" aria-labelledby="addConditionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addConditionModalLabel">Add Medical Condition</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_condition', patient_id=patient.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="condition_name" class="form-label">Condition Name</label>
+                        <input type="text" class="form-control" id="condition_name" name="condition_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="diagnosis_date" class="form-label">Diagnosis Date</label>
+                        <input type="date" class="form-control" id="diagnosis_date" name="diagnosis_date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Condition</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Allergy Modal -->
+<div class="modal fade" id="addAllergyModal" tabindex="-1" aria-labelledby="addAllergyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAllergyModalLabel">Add Allergy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_allergy', patient_id=patient.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="allergen" class="form-label">Allergen</label>
+                        <input type="text" class="form-control" id="allergen" name="allergen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reaction" class="form-label">Reaction</label>
+                        <textarea class="form-control" id="reaction" name="reaction" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="severity" class="form-label">Severity</label>
+                        <select class="form-select" id="severity" name="severity">
+                            <option value="Mild">Mild</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Severe">Severe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Allergy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Approve Prescription Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveModalLabel">Approve Prescription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to approve this prescription?</p>
+                <p class="text-muted small">This will add the medication to the patient's active medications list.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" id="approveForm" action="">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Prescription Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">Reject Prescription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this prescription?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" id="rejectForm" action="">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up the prescription approval modal
+        const approveModal = document.getElementById('approveModal');
+        if (approveModal) {
+            approveModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const prescriptionId = button.getAttribute('data-prescription-id');
+                document.getElementById('approveForm').action = `/prescription/${prescriptionId}/update`;
+            });
+        }
+        
+        // Set up the prescription rejection modal
+        const rejectModal = document.getElementById('rejectModal');
+        if (rejectModal) {
+            rejectModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const prescriptionId = button.getAttribute('data-prescription-id');
+                document.getElementById('rejectForm').action = `/prescription/${prescriptionId}/update`;
+            });
+        }
+    });
+</script>
+{% endblock %}

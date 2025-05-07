@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col">
+            <h1 class="mb-3">Genotype Analysis Results</h1>
+            <h4 class="mb-4">Patient: {{ patient.first_name }} {{ patient.last_name }} (ID: {{ patient.patient_id }})</h4>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Analysis for {{ analysis.drug_name }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Metabolism Effect</h5>
+                            <div class="mt-2">
+                                {% if analysis.metabolism_effect == 'ultrarapid' %}
+                                    <div class="alert alert-danger">
+                                        <h4 class="alert-heading">Ultrarapid Metabolizer</h4>
+                                        <p>The patient may metabolize this drug much faster than normal, potentially reducing efficacy.</p>
+                                    </div>
+                                {% elif analysis.metabolism_effect == 'rapid' %}
+                                    <div class="alert alert-warning">
+                                        <h4 class="alert-heading">Rapid Metabolizer</h4>
+                                        <p>The patient may metabolize this drug faster than normal, potentially reducing efficacy.</p>
+                                    </div>
+                                {% elif analysis.metabolism_effect == 'normal' %}
+                                    <div class="alert alert-success">
+                                        <h4 class="alert-heading">Normal Metabolizer</h4>
+                                        <p>The patient's metabolism of this drug is expected to be normal.</p>
+                                    </div>
+                                {% elif analysis.metabolism_effect == 'intermediate' %}
+                                    <div class="alert alert-info">
+                                        <h4 class="alert-heading">Intermediate Metabolizer</h4>
+                                        <p>The patient may metabolize this drug slower than normal, potentially increasing risk of side effects or requiring dosage adjustment.</p>
+                                    </div>
+                                {% elif analysis.metabolism_effect == 'poor' %}
+                                    <div class="alert alert-danger">
+                                        <h4 class="alert-heading">Poor Metabolizer</h4>
+                                        <p>The patient may metabolize this drug much slower than normal, significantly increasing the risk of side effects or toxicity.</p>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-secondary">
+                                        <h4 class="alert-heading">Unknown Metabolism</h4>
+                                        <p>The impact of the patient's genotype on this drug's metabolism is unknown or inconclusive.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Date of Analysis</h5>
+                            <p>{{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}</p>
+                            
+                            {% if analysis.rxcui %}
+                                <h5>RxCUI</h5>
+                                <p>{{ analysis.rxcui }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Recommendations</h5>
+                            <div class="p-3 bg-light rounded">
+                                {{ analysis.recommendations|safe|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Detailed Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="p-3 bg-light rounded">
+                        {{ analysis.full_analysis|safe|nl2br }}
+                    </div>
+                </div>
+            </div>
+            
+            {% if citations %}
+                <div class="card shadow mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Sources & Citations</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            {% for citation in citations %}
+                                <li><a href="{{ citation }}" target="_blank">{{ citation }}</a></li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="d-flex mt-4">
+                <a href="{{ url_for('view_genotype_data', patient_id=patient.id) }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Back to Genotype Data
+                </a>
+                <a href="{{ url_for('patient_profile', patient_id=patient.id) }}" class="btn btn-primary">
+                    <i class="fas fa-user"></i> Patient Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

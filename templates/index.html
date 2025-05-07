@@ -1,0 +1,146 @@
+
+
+{% extends "layout.html" %}
+
+{% block title %}MedSafety AI - Drug Interaction Alert System{% endblock %}
+
+{% block content %}
+
+<div class="row align-items-center">
+    <div class="col-lg-6 mb-4 mb-lg-0">
+        <h1 class="display-4 fw-bold mb-4">AI-Powered Drug Interaction Prevention</h1>
+        <p class="lead mb-4">MedSafety AI is a cutting-edge healthcare application that identifies and alerts professionals about potential drug interactions using patient medication history and AI analysis.</p>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+            </a>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                <i class="fas fa-sign-in-alt me-2"></i> Sign In
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="fas fa-user-plus me-2"></i> Register
+            </a>
+            {% endif %}
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-4 mb-3">
+                <div class="d-flex align-items-start">
+                    <div class="feature-icon bg-primary bg-gradient rounded-3 p-2 me-3">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <div>
+                        <h5>AI Detection</h5>
+                        <p class="text-muted small">Advanced AI algorithms analyze medication data to identify potential conflicts.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="d-flex align-items-start">
+                    <div class="feature-icon bg-primary bg-gradient rounded-3 p-2 me-3">
+                        <i class="fas fa-bell text-white"></i>
+                    </div>
+                    <div>
+                        <h5>Real-time Alerts</h5>
+                        <p class="text-muted small">Instant notifications about possible drug interactions and their severity.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="d-flex align-items-start">
+                    <div class="feature-icon bg-primary bg-gradient rounded-3 p-2 me-3">
+                        <i class="fas fa-lock text-white"></i>
+                    </div>
+                    <div>
+                        <h5>HIPAA Compliant</h5>
+                        <p class="text-muted small">Secure and compliant with healthcare data protection standards.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 text-center">
+        <svg width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Healthcare illustration -->
+            <rect x="100" y="100" width="300" height="200" rx="20" fill="#444" stroke="#0d6efd" stroke-width="3"/>
+            <circle cx="250" cy="200" r="80" fill="#222" stroke="#0d6efd" stroke-width="3"/>
+            <path d="M250 150 L250 250 M200 200 L300 200" stroke="#0d6efd" stroke-width="10" stroke-linecap="round"/>
+            <circle cx="170" cy="150" r="30" fill="#222" stroke="#0d6efd" stroke-width="2"/>
+            <circle cx="330" cy="150" r="30" fill="#222" stroke="#0d6efd" stroke-width="2"/>
+            <circle cx="170" cy="250" r="30" fill="#222" stroke="#0d6efd" stroke-width="2"/>
+            <circle cx="330" cy="250" r="30" fill="#222" stroke="#0d6efd" stroke-width="2"/>
+            <!-- Pills illustration -->
+            <ellipse cx="170" cy="150" rx="15" ry="5" fill="#0dcaf0"/>
+            <ellipse cx="330" cy="150" rx="15" ry="5" fill="#d63384"/>
+            <ellipse cx="170" cy="250" rx="15" ry="5" fill="#198754"/>
+            <ellipse cx="330" cy="250" rx="15" ry="5" fill="#ffc107"/>
+            <!-- Connection lines -->
+            <line x1="170" y1="150" x2="250" y2="200" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5,5"/>
+            <line x1="330" y1="150" x2="250" y2="200" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5,5"/>
+            <line x1="170" y1="250" x2="250" y2="200" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5,5"/>
+            <line x1="330" y1="250" x2="250" y2="200" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5,5"/>
+            <!-- Warning symbol -->
+            <polygon points="175,150 165,150 170,140" fill="#ffc107"/>
+            <text x="169" y="149" font-size="8" font-weight="bold" fill="#000">!</text>
+        </svg>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="row mb-5">
+    <div class="col-lg-12 text-center">
+        <h2 class="mb-4">How It Works</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="feature-icon bg-primary bg-gradient rounded-circle p-3 d-inline-flex mb-3">
+                    <i class="fas fa-user-plus fs-4 text-white"></i>
+                </div>
+                <h5 class="card-title">1. Patient Information</h5>
+                <p class="card-text">Input comprehensive patient data including medication history and medical conditions.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="feature-icon bg-primary bg-gradient rounded-circle p-3 d-inline-flex mb-3">
+                    <i class="fas fa-prescription fs-4 text-white"></i>
+                </div>
+                <h5 class="card-title">2. New Prescription</h5>
+                <p class="card-text">Enter details of new medications being considered for the patient.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="feature-icon bg-primary bg-gradient rounded-circle p-3 d-inline-flex mb-3">
+                    <i class="fas fa-brain fs-4 text-white"></i>
+                </div>
+                <h5 class="card-title">3. AI Analysis</h5>
+                <p class="card-text">Our AI system analyzes potential interactions with existing medications.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="feature-icon bg-primary bg-gradient rounded-circle p-3 d-inline-flex mb-3">
+                    <i class="fas fa-exclamation-triangle fs-4 text-white"></i>
+                </div>
+                <h5 class="card-title">4. Safety Alerts</h5>
+                <p class="card-text">Receive detailed alerts about potential interactions and recommended actions.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

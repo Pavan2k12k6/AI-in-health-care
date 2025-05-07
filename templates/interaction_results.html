@@ -1,0 +1,239 @@
+{% extends "layout.html" %}
+
+{% block title %}Drug Interaction Results - MedSafety AI{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Drug Interaction Analysis</h4>
+                    <a href="{{ url_for('patient_profile', patient_id=patient.id) }}" class="btn btn-sm btn-light">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Patient
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-primary">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-prescription-bottle-alt fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Prescription Details</h5>
+                            <p class="mb-0">
+                                <strong>{{ prescription.medication_name }}</strong><br>
+                                Dosage: {{ prescription.dosage }} | Frequency: {{ prescription.frequency }}<br>
+                                Indication: {{ prescription.indication }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interaction Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="severityChart" 
+                                        data-mild="{{ severity_counts.mild }}" 
+                                        data-moderate="{{ severity_counts.moderate }}" 
+                                        data-severe="{{ severity_counts.severe }}" 
+                                        data-unknown="{{ severity_counts.unknown }}">
+                                    </canvas>
+                                </div>
+                                
+                                <div class="d-flex justify-content-center mt-3">
+                                    <div class="text-center px-2">
+                                        <span class="d-block fs-4 fw-bold text-success">{{ severity_counts.mild }}</span>
+                                        <small class="text-muted">Mild</small>
+                                    </div>
+                                    <div class="text-center px-2">
+                                        <span class="d-block fs-4 fw-bold text-warning">{{ severity_counts.moderate }}</span>
+                                        <small class="text-muted">Moderate</small>
+                                    </div>
+                                    <div class="text-center px-2">
+                                        <span class="d-block fs-4 fw-bold text-danger">{{ severity_counts.severe }}</span>
+                                        <small class="text-muted">Severe</small>
+                                    </div>
+                                    <div class="text-center px-2">
+                                        <span class="d-block fs-4 fw-bold text-secondary">{{ severity_counts.unknown }}</span>
+                                        <small class="text-muted">Unknown</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">Patient Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>
+                                    <strong>{{ patient.first_name }} {{ patient.last_name }}</strong> (ID: {{ patient.patient_id }})<br>
+                                    DOB: {{ patient.date_of_birth.strftime('%m/%d/%Y') }} | Gender: {{ patient.gender }}
+                                    {% if patient.weight %} | Weight: {{ patient.weight }} kg{% endif %}
+                                </p>
+                                
+                                <h6 class="mt-3 mb-2">Current Medications:</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for medication in patient.medications if medication.active %}
+                                    <li class="list-group-item px-0 py-1 border-0">
+                                        • {{ medication.name }} ({{ medication.dosage }} - {{ medication.frequency }})
+                                    </li>
+                                    {% else %}
+                                    <li class="list-group-item px-0 py-1 border-0 text-muted">No active medications</li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                <h6 class="mt-3 mb-2">Allergies:</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for allergy in patient.allergies %}
+                                    <li class="list-group-item px-0 py-1 border-0">
+                                        • {{ allergy.allergen }} {% if allergy.severity %}({{ allergy.severity }}){% endif %}
+                                    </li>
+                                    {% else %}
+                                    <li class="list-group-item px-0 py-1 border-0 text-muted">No allergies recorded</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Interaction Details -->
+                <h5 class="mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Detected Drug Interactions</h5>
+                
+                {% if interactions %}
+                    {% for interaction in interactions %}
+                    <div class="card interaction-card {{ interaction.severity.lower() }} mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">
+                                    {{ interaction.drug1_name }} + {{ interaction.drug2_name }}
+                                </h5>
+                                <span class="severity-badge severity-{{ interaction.severity.lower() }}">{{ interaction.severity|capitalize }}</span>
+                            </div>
+                            
+                            <p class="card-text">{{ interaction.description }}</p>
+                            
+                            <div class="recommendation-box">
+                                <h6><i class="fas fa-lightbulb me-2"></i>Recommendation:</h6>
+                                <p class="mb-0">{{ interaction.recommendation }}</p>
+                            </div>
+                            
+                            <div class="text-muted mt-2 small">
+                                <i class="fas fa-database me-1"></i>Source: {{ interaction.source }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>No drug interactions detected between the new prescription and current medications.
+                    </div>
+                {% endif %}
+                
+                <!-- Decision Buttons -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Prescription Decision</h5>
+                        
+                        <div class="d-flex flex-column flex-md-row justify-content-between">
+                            <div class="mb-3 mb-md-0">
+                                <h6>Current Status: 
+                                    <span class="badge {% if prescription.status == 'pending' %}bg-warning text-dark{% elif prescription.status == 'approved' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ prescription.status|capitalize }}
+                                    </span>
+                                </h6>
+                                
+                                {% if prescription.status == 'pending' %}
+                                <p class="text-muted">Please review the interactions and make a decision on this prescription.</p>
+                                {% elif prescription.status == 'approved' %}
+                                <p class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>This prescription has been approved and added to the patient's medication list.
+                                </p>
+                                {% else %}
+                                <p class="text-danger">
+                                    <i class="fas fa-times-circle me-1"></i>This prescription has been rejected.
+                                </p>
+                                {% endif %}
+                            </div>
+                            
+                            {% if prescription.status == 'pending' %}
+                            <div class="d-grid gap-2 d-md-block">
+                                <button type="button" class="btn btn-success me-md-2" data-bs-toggle="modal" data-bs-target="#approveConfirmModal">
+                                    <i class="fas fa-check me-1"></i>Approve
+                                </button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectConfirmModal">
+                                    <i class="fas fa-times me-1"></i>Reject
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Approve Confirmation Modal -->
+<div class="modal fade" id="approveConfirmModal" tabindex="-1" aria-labelledby="approveConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveConfirmModalLabel">Confirm Approval</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to approve this prescription?</p>
+                
+                {% if severity_counts.severe > 0 %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Warning:</strong> This prescription has {{ severity_counts.severe }} severe interaction(s).
+                </div>
+                {% endif %}
+                
+                <p class="text-muted small">Approving will add this medication to the patient's active medications list.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('update_prescription_status', prescription_id=prescription.id) }}">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn btn-success">Approve Prescription</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Confirmation Modal -->
+<div class="modal fade" id="rejectConfirmModal" tabindex="-1" aria-labelledby="rejectConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectConfirmModalLabel">Confirm Rejection</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this prescription?</p>
+                <p class="text-muted small">This medication will not be added to the patient's active medications list.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('update_prescription_status', prescription_id=prescription.id) }}">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn btn-danger">Reject Prescription</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

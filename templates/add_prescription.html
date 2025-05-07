@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Prescription - MedSafety AI{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-prescription me-2"></i>New Prescription</h4>
+                    <a href="{{ url_for('patient_profile', patient_id=patient.id) }}" class="btn btn-sm btn-light">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Patient
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Patient Information</h5>
+                            <p class="mb-0">
+                                <strong>{{ patient.first_name }} {{ patient.last_name }}</strong> (ID: {{ patient.patient_id }})<br>
+                                DOB: {{ patient.date_of_birth.strftime('%m/%d/%Y') }} | Gender: {{ patient.gender }}
+                                {% if patient.weight %} | Weight: {{ patient.weight }} kg{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="POST" action="{{ url_for('add_prescription', patient_id=patient.id) }}">
+                    <div class="mb-3 suggestions-container">
+                        <label for="medication_name" class="form-label">Medication Name</label>
+                        <input type="text" class="form-control" id="medication_name" name="medication_name" required>
+                        <div id="drug-suggestions" class="mt-1"></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dosage" class="form-label">Dosage</label>
+                            <input type="text" class="form-control" id="dosage" name="dosage" placeholder="e.g., 10mg" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="frequency" class="form-label">Frequency</label>
+                            <input type="text" class="form-control" id="frequency" name="frequency" placeholder="e.g., twice daily" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="indication" class="form-label">Indication / Reason for Prescription</label>
+                        <textarea class="form-control" id="indication" name="indication" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="alert-heading">Important Notice</h5>
+                                <p class="mb-0">
+                                    After submission, the system will check for potential drug interactions with the patient's current medications.
+                                    You will be asked to review any interactions before finalizing the prescription.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="reset" class="btn btn-outline-secondary me-md-2">Clear</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check-circle me-2"></i>Check for Interactions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

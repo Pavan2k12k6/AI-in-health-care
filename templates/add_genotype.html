@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col">
+            <h1 class="mb-4">Add Genotype Data</h1>
+            <h4 class="mb-3">Patient: {{ patient.first_name }} {{ patient.last_name }} (ID: {{ patient.patient_id }})</h4>
+            
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Add Genotype Data</h5>
+                    <p class="card-text">Enter genetic variant information for this patient. This data will be used to analyze drug metabolism profiles.</p>
+                    
+                    <form method="POST" class="mt-3">
+                        <div class="mb-3">
+                            <label for="gene" class="form-label">Gene Name</label>
+                            <input type="text" class="form-control" id="gene" name="gene" required 
+                                placeholder="e.g., CYP2D6, CYP2C19">
+                            <div class="form-text">Common pharmacogenomic genes include CYP2D6, CYP2C19, CYP2C9, VKORC1, etc.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="variant" class="form-label">Variant</label>
+                            <input type="text" class="form-control" id="variant" name="variant" required
+                                placeholder="e.g., *1/*4, rs12248560 (T;C)">
+                            <div class="form-text">Enter the specific allele or SNP variant.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phenotype" class="form-label">Phenotype</label>
+                            <select class="form-select" id="phenotype" name="phenotype">
+                                <option value="">-- Select Phenotype --</option>
+                                <option value="Ultrarapid Metabolizer">Ultrarapid Metabolizer</option>
+                                <option value="Rapid Metabolizer">Rapid Metabolizer</option>
+                                <option value="Normal Metabolizer">Normal Metabolizer</option>
+                                <option value="Intermediate Metabolizer">Intermediate Metabolizer</option>
+                                <option value="Poor Metabolizer">Poor Metabolizer</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="significance" class="form-label">Clinical Significance</label>
+                            <select class="form-select" id="significance" name="significance">
+                                <option value="">-- Select Significance --</option>
+                                <option value="High">High</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Low">Low</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Add Genotype Data</button>
+                        <a href="{{ url_for('view_genotype_data', patient_id=patient.id) }}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Common Pharmacogenomic Genes</h5>
+                    <p class="card-text">Here are some common pharmacogenomic genes and their significance:</p>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Gene</th>
+                                <th>Clinical Significance</th>
+                                <th>Relevant Medications</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CYP2D6</td>
+                                <td>Metabolizes approximately 25% of clinically used drugs</td>
+                                <td>Codeine, tramadol, antidepressants, antipsychotics</td>
+                            </tr>
+                            <tr>
+                                <td>CYP2C19</td>
+                                <td>Important for metabolism of several drug classes</td>
+                                <td>Clopidogrel, PPIs, some antidepressants</td>
+                            </tr>
+                            <tr>
+                                <td>CYP2C9</td>
+                                <td>Metabolizes ~15% of clinically used drugs</td>
+                                <td>Warfarin, NSAIDs, phenytoin</td>
+                            </tr>
+                            <tr>
+                                <td>VKORC1</td>
+                                <td>Affects response to vitamin K antagonists</td>
+                                <td>Warfarin</td>
+                            </tr>
+                            <tr>
+                                <td>SLCO1B1</td>
+                                <td>Transporter affecting statin uptake</td>
+                                <td>Statins (especially simvastatin)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
